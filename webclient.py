@@ -19,25 +19,27 @@ def main():
     print("Connecting to host:%s on port:%d" % (host, port))
 
     s=socket.socket()
-    s.connect((host, port))
+    try:
+        s.connect((host, port))
 
-    request=(
-        f"GET / HTTP/1.1\r\n"
-        f"Host:{host}\r\n"
-        f"Connection: close\r\n"
-        f"\r\n"
+        request=(
+            f"GET / HTTP/1.1\r\n"
+            f"Host: {host}\r\n"
+            f"Connection: close\r\n"
+            f"\r\n"
 
-    )
-    s.sendall(request.encode(ENC))
-    response = b""
-    while True:
-        chunk = s.recv(4096)
-        if not chunk:
-            break
-        response += chunk
+        )
+        s.sendall(request.encode(ENC))
+        response = b""
+        while True:
+            chunk = s.recv(4096)
+            if not chunk:
+                break
+            response += chunk
 
-    print(response.decode(ENC))
-    s.close()
+        print(response.decode(ENC))
+    finally:
+        s.close()
 
 if __name__ == "__main__":
     main()
